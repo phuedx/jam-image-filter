@@ -219,8 +219,9 @@ def modify_hsv(rgb, h=None, s=None, v=None):
     return hsv_to_rgb(hsv)
 
 def spread_colours_by_lightness(rgbs, min_lightness=50, max_lightness=220):
-    lightnesses = map(lambda rgb: rgb_to_hls(rgb)[1], rgbs)
-    bottom, top = min(lightnesses), max(lightnesses)
+    lightnesses = sorted(map(lambda rgb: rgb_to_hls(rgb)[1], rgbs))
+    bottom = lightnesses[0]
+    top = lightnesses[-1]
     scale = float((max_lightness - min_lightness)) / (top - bottom)
 
     def modify_lightness(l):
