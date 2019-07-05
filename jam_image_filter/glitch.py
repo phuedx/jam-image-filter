@@ -1,6 +1,6 @@
 import sys
 import math
-import Image
+from PIL import Image
 import numpy as np
 import util
 import sh
@@ -36,16 +36,16 @@ def glitch(im, min_pixelation=3, max_pixelation=18, max_attempts=20,
     im.save(infile.name)
 
     # naive image diff to ensure image is not too different from original
-    for attempt in xrange(max_attempts):
+    for attempt in range(max_attempts):
         sh.glitch(infile.name, outfile.name)
         inim = Image.open(infile.name)
         outim = Image.open(outfile.name)
         inpix = inim.resize((10, 10)).load()
         outpix = outim.resize((10, 10)).load()
         diff = 0
-        for y in xrange(10):
-            for x in xrange(10):
-                for i in xrange(3):
+        for y in range(10):
+            for x in range(10):
+                for i in range(3):
                     diff += abs(inpix[x, y][i] - outpix[x, y][i])
         if diff > min_diff and diff < max_diff:
             break

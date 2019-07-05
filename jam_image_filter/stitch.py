@@ -1,7 +1,7 @@
 import sys
 import aggdraw
 import math
-import Image
+from PIL import Image
 import scipy.spatial.distance as distance
 import numpy as np
 from ImageEnhance import Contrast
@@ -31,8 +31,8 @@ def stitch(im, pixelation=12):
     width, height = new.size
 
     # draw stitches
-    for y in xrange(0, height, pixelation):
-        for x in xrange(0, width, pixelation):
+    for y in range(0, height, pixelation):
+        for x in range(0, width, pixelation):
             pen = aggdraw.Pen(pix[x / pixelation, y / pixelation], 2)
             draw.line((x, y, x + pixelation - 3, y + pixelation - 3), pen)
             draw.line((x + pixelation - 3, y, x, y + pixelation - 3), pen)

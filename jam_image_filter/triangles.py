@@ -1,12 +1,11 @@
 import sys
 import aggdraw
 import math
-import Image
+from PIL import Image, ImageOps
 import random
 import numpy as np
 import util
 import os.path
-import ImageOps
 
 def get_triangle_path(mid_x, mid_y, min_length = 70, max_length = 70):
     angle = random.random() * (2 * math.pi / 3)
@@ -39,7 +38,7 @@ def triangles(original, n=30, size=150, width=700,
                 return True
         return False
 
-    for i in xrange(n):
+    for i in range(n):
 
         colour = tuple(colours[int(random.randint(0, len(colours) - 1))])
         x = random.randint(size / 2, width - 1 - size / 2)

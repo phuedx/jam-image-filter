@@ -1,7 +1,7 @@
 import sys
 import aggdraw
 import math
-import Image
+from PIL import Image
 import util
 import random
 from ImageEnhance import Contrast
@@ -39,7 +39,7 @@ def halftone(original, radius=3, border=21, black_and_white=False):
 
     x_incr = 2 * radius
     y_incr = math.sqrt(3) * radius
-    for y in xrange(0, height + 1, int(y_incr)):
+    for y in range(0, height + 1, int(y_incr)):
         odd_offset = radius * (y / int(y_incr) % 2)
         for x in range(odd_offset, width + 1, x_incr):
             avg_gray = util.get_avg_gray(pix, x, y, radius)

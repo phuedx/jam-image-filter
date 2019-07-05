@@ -2,10 +2,9 @@ import math
 import colorsys
 import scipy
 import scipy.cluster
-import scipy.misc
 import operator
 import math
-import Image
+from PIL import Image
 import numpy as np
 import random
 
@@ -18,8 +17,8 @@ def rgb_to_gray(r, g, b, a = None):
 def get_avg_gray(pix, x, y, radius, sample_size = 0.1):
     nsamples = math.pow(radius, 2) * sample_size
     avg = 0
-    for y in xrange(y - radius, y + radius, int(1 / sample_size)):
-        for x in xrange(x - radius, x + radius, int(1 / sample_size)):
+    for y in range(y - radius, y + radius, int(1 / sample_size)):
+        for x in range(x - radius, x + radius, int(1 / sample_size)):
             try:
                 if len(pix[x, y]) >= 3:
                     avg += rgb_to_gray(*pix[x,y])
@@ -34,12 +33,18 @@ def get_dominant_colours(im, n):
     small_height = 50
     orig_width, orig_height = im.size
     im = im.resize((small_width, small_height))
-    array = scipy.misc.fromimage(im)
-    width, height, ncolours = array.shape
-    array = array.reshape(width * height, ncolours)
-    codes, dist = scipy.cluster.vq.kmeans(array, n)
-    codes = np.array([map(int, colour) for colour in codes])
 
+    # Was
+    #
+    #   array = scipy.misc.fromimage(im)
+    #
+    # N.B. scipy.cluster.vq.kmeans requires floats or doubles.
+    array = np.asarray(im, dtype=np.float32)
+    array = array.reshape(small_width * small_height, array.shape[2])
+
+    # array is now a list of 250 tuples, e.g. 3-tuples for the RGB colour model.
+
+    codes, dist = scipy.cluster.vq.kmeans(array, n)
     codes = pad_colours(codes, n)
 
     #vec, dist = scipy.cluster.vq.vq(array, codes)
@@ -49,37 +54,40 @@ def get_dominant_colours(im, n):
 
 def pad_colours(rgbs, n):
     new_rgbs = [None] * n
-    for i in xrange(n):
+    for i in range(n):
         j = int(i / (n / float(len(rgbs))))
         new_rgbs[i] = rgbs[j]
     return new_rgbs
 
-def order_colours_by_brightness(colours):
-    colours_value = []
-    for colour in colours:
-        c = colour / 255.0
-        value = colorsys.rgb_to_hls(*c)[1]
-        colours_value.append((value, colour))
-    colours_value.sort(key=operator.itemgetter(0), reverse=True)
-    return map(operator.itemgetter(1), colours_value)
+
+def _rgb_to_hue(rgb):
+    # colorsys requires that all coordinates are between 0 and 1.
+    t = rgb / 255.0
+
+    return colorsys.rgb_to_hls(*t)[0]
 
 def order_colours_by_hue(colours):
-    colours_value = []
-    for colour in colours:
-        c = colour / 255.0
-        value = colorsys.rgb_to_hls(*c)[0]
-        colours_value.append((value, colour))
-    colours_value.sort(key=operator.itemgetter(0), reverse=True)
-    return map(operator.itemgetter(1), colours_value)
+    return sorted(colours, key=_rgb_to_hue, reverse=True)
+
+
+# Should probably be called _rgb_to_luminosity...
+def _rgb_to_brightness(rgb):
+    t = rgb / 255.0
+
+    return colorsys.rgb_to_hls(*t)[1]
+
+def order_colours_by_brightness(colours):
+    return sorted(colours, key=_rgb_to_brightness, reverse=True)
+
+
+def _rgb_to_saturation(rgb):
+    t = rgb / 255.0
+
+    return colorsys.rgb_to_hls(*t)[2]
 
 def order_colours_by_saturation(colours):
-    colours_value = []
-    for colour in colours:
-        c = colour / 255.0
-        value = colorsys.rgb_to_hsv(*c)[1]
-        colours_value.append((value, colour))
-    colours_value.sort(key=operator.itemgetter(0), reverse=True)
-    return map(operator.itemgetter(1), colours_value)
+    return sorted(colours, key=_rgb_to_saturation, reverse=True)
+
 
 def resize_jam_background(im, target_width=WIDTH, target_height=HEIGHT,
                           max_resize=16.0, pixelated=False):
@@ -139,7 +147,7 @@ def max_size(im, target_width, target_height):
     width, height = im.size
     scale = max(width / target_width, height / target_height)
     if scale > 1:
-        return im.resize((width / scale, height / scale))
+        return im.resize((int(width / scale), int(height / scale)))
     else:
         return im
 
@@ -164,7 +172,7 @@ def create_gradient(size, colours):
     im = Image.new('RGB', (1, height))
     pix = im.load()
 
-    for i in xrange(height):
+    for i in range(height):
         pix[0, i] = interpolate_colour(colours, i / float(height))
 
     im = im.resize((width, height), Image.BILINEAR)

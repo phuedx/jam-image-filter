@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+sh = "*"
+scipy = "*"
+numpy = "*"
+aggdraw = {editable = true,git = "https://github.com/jakul/aggdraw.git"}
+Pillow = "*"
+
+[requires]
+python_version = "3.7"

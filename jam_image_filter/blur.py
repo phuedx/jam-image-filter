@@ -2,7 +2,7 @@ import sys
 import math
 import scipy.ndimage as ndimage
 import scipy
-import Image
+from PIL import Image
 import ImageFilter
 import numpy as np
 import util

@@ -13,14 +13,14 @@ def kaleidoscope(original, max_width=400, max_height=400, darken=True):
     new = Image.new('RGB', (length * 2, length * 2))
     new_pix = new.load()
 
-    for part in xrange(8):
+    for part in range(8):
 
         reverse = part in [1, 4, 6, 7]
         flip = part in [3, 4, 5, 6]
         turn = part in [2, 3, 6, 7]
 
-        for y in xrange(length):
-            for x in xrange(length - y - 1, length):
+        for y in range(length):
+            for x in range(length - y - 1, length):
 
                 if turn:
                     to_x = length + y + 1
