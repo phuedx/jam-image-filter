@@ -4,7 +4,7 @@ import math
 from PIL import Image
 import scipy.spatial.distance as distance
 import numpy as np
-from ImageEnhance import Contrast
+from PIL.ImageEnhance import Contrast
 import util
 import random
 
@@ -21,7 +21,7 @@ def stitch(im, pixelation=12):
 
     # random bg colour
     colours = util.get_dominant_colours(im, 2)
-    colours = map(tuple, colours)
+    colours = list(map(tuple, colours))
     colours += [(0,0,0), (255,255,255)]
     bg_index = random.randint(0, len(colours) - 1)
 
