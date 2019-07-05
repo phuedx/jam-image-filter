@@ -15,7 +15,7 @@ def tats(image):
     light = random.choice(colours[3:6])
     dark = random.choice(colours[6:])
 
-    dist = math.sqrt(sum(map(lambda (a, b): math.pow(a - b, 2), zip(light, dark))))
+    dist = math.sqrt(sum(map(lambda t: math.pow(t[0] - t[1], 2), zip(light, dark))))
     if dist < 100:
         light = util.modify_hls(light, l=lambda l: l + 100)
 
