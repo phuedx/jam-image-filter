@@ -157,8 +157,8 @@ def interpolate_colour(colours, x):
     end_i = start_i + 1
     delta = i - start_i
 
-    start_rgb = map(int, colours[start_i])
-    end_rgb = map(int, colours[end_i])
+    start_rgb = list(map(int, colours[start_i]))
+    end_rgb = list(map(int, colours[end_i]))
 
     rgb = []
     for i in range(3):
