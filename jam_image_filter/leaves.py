@@ -21,10 +21,12 @@ def leaves(image):
     width, height = layer.size
 
     # shift half of the image horizontally
-    left = layer.crop((0, 0, width / 2, height))
-    right = layer.crop((width / 2, 0, width, height))
+    half_width = width // 2
+
+    left = layer.crop((0, 0, half_width, height))
+    right = layer.crop((half_width, 0, width, height))
     new = Image.new('RGB', (width, height))
-    new.paste(left, (width / 2, 0))
+    new.paste(left, (half_width, 0))
     new.paste(right, (0, 0))
 
     return new
