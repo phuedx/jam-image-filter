@@ -1,9 +1,7 @@
 import sys
 import math
 import scipy.ndimage as ndimage
-import scipy
 from PIL import Image
-import ImageFilter
 import numpy as np
 import util
 
@@ -14,7 +12,7 @@ def blur(original, sigma=10, darken=True):
     if darken:
         original = original.point(lambda p: p * .8)
 
-    image = scipy.misc.fromimage(original, flatten=False)
+    image = np.asarray(original)
 
     image = image.transpose((2, 0, 1))
     r = ndimage.gaussian_filter(image[0], sigma=sigma)
@@ -22,7 +20,7 @@ def blur(original, sigma=10, darken=True):
     b = ndimage.gaussian_filter(image[2], sigma=sigma)
     image = np.array([r, g, b]).transpose((1, 2, 0))
 
-    return scipy.misc.toimage(image)
+    return Image.fromarray(image)
 
 if __name__ == '__main__':
     image = Image.open(sys.argv[1])
